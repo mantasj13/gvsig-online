@@ -31,7 +31,7 @@ import shutil
 import ldap
 import sys
 import os
-import imp
+import importlib
 import logging
 
 LDAP_ENCODING = 'utf-8'
@@ -48,7 +48,7 @@ class GvSigOnlineServices():
         self.password = password
         
         if sys.getdefaultencoding() != 'utf-8':
-            imp.reload(sys)  # Reload does the trick!
+            importlib.reload(sys)  # Reload does the trick!
             sys.setdefaultencoding('utf-8')
         
         if is_enabled:

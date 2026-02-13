@@ -168,7 +168,7 @@
 							xhr.setRequestHeader('X-CSRFToken', Cookies.get('csrftoken'));
 						},
 						success: function(response, a, b, c) {
-							location.href = '{% url "index" %}';
+							location.href = '{% url "home" %}';
 						},
 						error: function(response){}
 					});

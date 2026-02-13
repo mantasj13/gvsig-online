@@ -1,0 +1,19 @@
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Django static files
+/assets/
+
+# Virtual environment
+../venv/
+
+# Local settings
+local_settings.py
+
+# IDE
+.vscode/
+.idea/
+

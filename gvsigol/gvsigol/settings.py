@@ -25,10 +25,10 @@
 # See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 import os
-import ldap
+#import ldap
 import django.conf.locale
 from django.conf import settings
-from django_auth_ldap.config import LDAPSearch
+#from django_auth_ldap.config import LDAPSearch
 from django.utils.translation import gettext_lazy as _
 from django.core.files.storage import FileSystemStorage
 import datetime
@@ -384,6 +384,9 @@ DATABASES = {
         'TEST': {
             'NAME': 'test',
         }, 
+        'OPTIONS': {
+            'options': '-c timezone=utc'
+        },
     }
 }
 POSTGIS_VERSION = env('POSTGIS_VERSION')
@@ -432,8 +435,8 @@ AUTHENTICATION_BACKENDS = (
 )
 
 #Load auth backends
-if env('LDAP_ENABLED'):
-    AUTHENTICATION_BACKENDS = ('django_auth_ldap.backend.LDAPBackend', ) + AUTHENTICATION_BACKENDS
+#if env('LDAP_ENABLED'):
+#    AUTHENTICATION_BACKENDS = ('django_auth_ldap.backend.LDAPBackend', ) + AUTHENTICATION_BACKENDS
 AUTHENTICATION_BACKENDS = AUTHENTICATION_BACKENDS + env('DJANGO_AUTHENTICATION_BACKENDS')
 print ("INFO: Additional AUTHENTICATION_BACKENDS = " + str(env('DJANGO_AUTHENTICATION_BACKENDS')))
 
@@ -450,9 +453,9 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 if GVSIGOL_AUTH_PROVIDER != 'gvsigol_auth':
     import_settings(GVSIGOL_AUTH_PROVIDER+".settings", globals())
 GVSIGOL_AUTH_MIDDLEWARE = env('GVSIGOL_AUTH_MIDDLEWARE')
-AUTH_LDAP_SERVER_URI = "ldap://" + env('LDAP_HOST') + ":" + env('LDAP_PORT')
-AUTH_LDAP_ROOT_DN = env('LDAP_ROOT_DN')
-AUTH_LDAP_USER_SEARCH = LDAPSearch(env('LDAP_ROOT_DN'), ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
+#AUTH_LDAP_SERVER_URI = "ldap://" + env('LDAP_HOST') + ":" + env('LDAP_PORT')
+#AUTH_LDAP_ROOT_DN = env('LDAP_ROOT_DN')
+#AUTH_LDAP_USER_SEARCH = LDAPSearch(env('LDAP_ROOT_DN'), ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
 AUTH_DASHBOARD_UI = env('AUTH_DASHBOARD_UI')
 AUTH_READONLY_USERS = env('AUTH_READONLY_USERS')
 OIDC_VERIFY_SSL = env('OIDC_VERIFY_SSL')
@@ -464,7 +467,7 @@ if GVSIGOL_AUTH_PROVIDER == 'gvsigol_plugin_oidc_mozilla' :
 # Internationalization
 LANGUAGE_CODE = 'es'
 #TIME_ZONE = 'UTC'
-TIME_ZONE = 'Europe/Madrid'
+TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
