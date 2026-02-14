@@ -231,6 +231,7 @@ INSTALLED_APPS = [
     #### DEPENDENCIES ######,
     'django_celery_beat',
     'django_celery_results',  # Para almacenar resultados de Celery en la DB
+    'gvsigol_app_dev',
 ]
 
 # environment
