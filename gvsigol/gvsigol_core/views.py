@@ -941,10 +941,10 @@ def project_get_conf(request):
     errors = []
     if request.method == 'POST':
         pid = request.POST.get('pid')
-        is_shared_view = json.loads(request.POST.get('shared_view'))
+        is_shared_view = json.loads(request.POST.get('shared_view', 'false'))
     elif request.method == 'GET':
         pid = request.GET.get('pid')
-        is_shared_view = json.loads(request.GET.get('shared_view'))
+        is_shared_view = json.loads(request.GET.get('shared_view', 'false'))
     else:
         return HttpResponse('', content_type='application/json')
 
