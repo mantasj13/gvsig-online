@@ -724,7 +724,7 @@ TEMPORAL_ADVANCED_PARAMETERS = False
 #TODO: set environment variables
 LEGACY_GVSIGOL_SERVICES = {
     'ENGINE':'geoserver',
-    'URL': 'https://localhost/geoserver',
+    'URL': 'http://localhost/geoserver',
     'USER': 'admin',
     'PASSWORD': 'geoserver'
 }
