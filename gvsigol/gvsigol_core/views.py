@@ -808,9 +808,21 @@ def load(request, project_name):
     else:
         return redirect('load_project', project_name=project.name)
 
-@login_required()
+# @login_required()
 @cache_control(max_age=86400)
 def load_project(request, project_name):
+    # Allow access to public projects without login
+    if not request.user.is_authenticated:
+        try:
+            project = Project.objects.get(name__exact=project_name)
+            if project.is_public:
+                return load_public_project(request, project_name)
+        except Project.DoesNotExist:
+            pass
+        # If not public or doesn't exist, require login
+        from django.contrib.auth.views import redirect_to_login
+        return redirect_to_login(request.get_full_path())
+    
     if core_utils.can_read_project(request, project_name):
         project = Project.objects.get(name__exact=project_name)
 
