@@ -219,6 +219,10 @@ def fieldmapping_sql(creation_mode, shp_path, shp_fields, table_name, host, port
         #   fields = _append_overwrite_fieldmapping(creation_mode, shp_fields, table_name, host, port, db, schema, user, password, default_creation_options, default_column_types)
         fields, db_pk = _append_overwrite_fieldmapping(creation_mode, shp_fields, table_name, host, port, db, schema, user, password, default_creation_options, default_column_types, pk_column)
     
+    
+    # Validar que hay campos para exportar
+    if not fields:
+        raise InvalidValue(-1, _("No attribute fields found in the shapefile. The layer cannot be exported without attribute fields."))
     shp_name = os.path.splitext(os.path.basename(shp_path))[0]
     sql = "SELECT " + ",".join(fields) + " FROM " + shp_name
     return sql, db_pk
@@ -323,7 +327,7 @@ def do_export_to_postgis(gs, name, datastore, creation_mode, shp_path, shp_field
     tmp_folder = None
     try:
         tmp_folder = get_tmp_folder()
-        ds_params = json.loads(datastore.connection_params) 
+        ds_params = datastore.get_connection_params_dict() 
         db = ds_params.get('database')
         host = ds_params.get('host')
         port = ds_params.get('port')
@@ -415,7 +419,7 @@ def do_export_to_postgis(gs, name, datastore, creation_mode, shp_path, shp_field
         if e.code > 0:
             if creation_mode == MODE_OVERWRITE:
 
-                params = json.loads(datastore.connection_params)
+                params = datastore.get_connection_params_dict()
                 host = params['host']
                 port = params['port']
                 dbname = params['database']
