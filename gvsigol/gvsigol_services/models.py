@@ -775,13 +775,19 @@ class Datastore(models.Model):
         Obtiene los parámetros de conexión como diccionario,
         independientemente del modo (legacy o nuevo).
         """
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.warning(f"get_connection_params_dict: legacy_mode={self.legacy_mode}, connection={self.connection}, connection_id={self.connection_id}")
+        
         if self.is_using_connection():
             # Nuevo modelo: obtener de la Connection y añadir schema
+            logger.warning(f"Using NEW connection model, connection.connection_params={self.connection.connection_params}")
             params = self.connection.get_connection_params()
             params['schema'] = self.schema or 'public'
             return params
         else:
             # Modo legacy: parsear connection_params
+            logger.warning(f"Using LEGACY mode, connection_params={self.connection_params}")
             try:
                 return json.loads(self.connection_params) if self.connection_params else {}
             except:

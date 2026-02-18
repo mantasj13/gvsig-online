@@ -1350,9 +1350,10 @@ def project_get_conf(request):
                     'password': request.session['password']
                 }
             except KeyError:
-                # happens when using OIDC auth, the session has expired and the token has not been provided
-                logger.debug(str(user_roles))
-                return JsonResponse({"status": "error", "message": "Token missing or expired"}, status=401)
+                # Session does not have credentials stored
+                # This can happen after browser restart or for SSO/OIDC users
+                # Simply don't include credentials in the response
+                pass
     if is_shared_view:
         view_name = request.GET.get('shared_view_name')
         shared_view = SharedView.objects.get(name__exact=view_name)
