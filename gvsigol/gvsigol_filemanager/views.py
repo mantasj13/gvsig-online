@@ -149,9 +149,6 @@ class ExportToDatabaseView(LoginRequiredMixin, UserPassesTestMixin, FilemanagerM
                         "Field '{}' contains non-ASCII characters in field name and is not suported. Rename this fields and try again. Allowed characters are a-z, A-Z, _ or numbers; the first character can't be a number.",
                         "Fields [{}] contain non-ASCII characters in field name and are not suported. Rename these fields and try again. Allowed characters are a-z, A-Z, _ or numbers; the first character can't be a number.",
                         len(offending_fields)).format(", ".join(offending_fields))
-            # Validar que el shapefile tiene al menos un campo de atributos
-            if len(shp_columns) == 0 and column_name_error is None:
-                column_name_error = _("The shapefile has no attribute fields. At least one attribute field is required to export to database.")
         except UnicodeError:
             shp_columns = []
             column_name_error = _("The layer contains non-ASCII characters in field names and it is not suported. Rename the offending fields and try again. Allowed characters are a-z, A-Z, _ or numbers; the first character can't be a number.")

@@ -459,7 +459,7 @@ class Geoserver():
             else:
                 catalog.delete(ds, purge, recurse=True)
                 if delete_schema:
-                    utils.delete_schema_for_datastore(json.loads(datastore.connection_params))
+                    utils.delete_schema_for_datastore(datastore.get_connection_params_dict())
                 
             return True
         else:
@@ -579,7 +579,7 @@ class Geoserver():
             if geom_type == RASTER:
                 style_type = 'CT'
             else:  
-                params = json.loads(layer.datastore.connection_params)
+                params = layer.datastore.get_connection_params_dict()
                 host = params['host']
                 port = params['port']
                 dbname = params['database']
@@ -829,7 +829,7 @@ class Geoserver():
                 return self.createWMSLayer(workspace, store, name, title)
             else:
                 if store.type == 'c_ImageMosaic':
-                    #got_params = json.loads(store.connection_params)
+                    #got_params = store.get_connection_params_dict()
                     #mosaic_url = got_params["url"].replace("file://", "")
                     #split_mosaic_url = mosaic_url.split("/")
                     #coverage_name = split_mosaic_url[split_mosaic_url.__len__()-1]
@@ -862,7 +862,7 @@ class Geoserver():
         
     def createImageMosaic(self, workspace, store, name, title):
         try:
-            params = json.loads(store.connection_params)
+            params = store.get_connection_params_dict()
             file = params['url']
             split_mosaic_url = file.split("/")
             mosaic_name = split_mosaic_url[split_mosaic_url.__len__()-1]
@@ -1205,7 +1205,7 @@ class Geoserver():
             # We are going to perform a command line execution with them,
             # so we must be ABSOLUTELY sure that no code injection can be
             # performed
-            ds_params = json.loads(datastore.connection_params) 
+            ds_params = datastore.get_connection_params_dict() 
             db = ds_params.get('database')
             host = ds_params.get('host')
             port = ds_params.get('port')
@@ -1611,7 +1611,7 @@ class Geoserver():
                 
         
         try:
-            params = json.loads(datastore.connection_params)
+            params = datastore.get_connection_params_dict()
             host = params['host']
             port = params['port']
             dbname = params['database']
@@ -1632,7 +1632,7 @@ class Geoserver():
     
     def deleteTable(self, datastore, name):
         try:
-            params = json.loads(datastore.connection_params)
+            params = datastore.get_connection_params_dict()
             host = params['host']
             port = params['port']
             dbname = params['database']
@@ -1692,7 +1692,7 @@ class Geoserver():
         Gets the SRS of a PostGIS feature type by connecting directly to the database
         """
         try:
-            params = json.loads(datastore.connection_params)
+            params = datastore.get_connection_params_dict()
             host = params['host']
             port = params['port']
             dbname = params['database']
@@ -1832,7 +1832,7 @@ class Geoserver():
     
     # ImageMosaic methods
     def createimagemosaic(self, store, layer):
-        params = json.loads(store.connection_params)
+        params = store.get_connection_params_dict()
         try:
             ele_regex = params.get('ele_regex', '')
             date_regex = params.get('date_regex', '')

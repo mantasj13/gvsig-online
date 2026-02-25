@@ -220,9 +220,6 @@ def fieldmapping_sql(creation_mode, shp_path, shp_fields, table_name, host, port
         fields, db_pk = _append_overwrite_fieldmapping(creation_mode, shp_fields, table_name, host, port, db, schema, user, password, default_creation_options, default_column_types, pk_column)
     
     
-    # Validar que hay campos para exportar
-    if not fields:
-        raise InvalidValue(-1, _("No attribute fields found in the shapefile. The layer cannot be exported without attribute fields."))
     shp_name = os.path.splitext(os.path.basename(shp_path))[0]
     sql = "SELECT " + ",".join(fields) + " FROM " + shp_name
     return sql, db_pk

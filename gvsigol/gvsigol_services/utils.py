@@ -878,7 +878,7 @@ def clone_layer(target_datastore, layer, layer_group, clone_conf=None):
             table_name = layer.source_name if layer.source_name else layer.name
             schema_name = layer.datastore.name
             try:
-                schema_name = json.loads(layer.datastore.connection_params)["schema"]
+                schema_name = layer.datastore.get_connection_params_dict()["schema"]
             except:
                 pass
             new_table_name = i.clone_table(schema_name, table_name, target_datastore.name, table_name, copy_data=clone_conf.copy_data)
@@ -1299,7 +1299,7 @@ def delete_datastore_elements(ds, gs=None):
 
     Datastore.objects.all().filter(name=ds.name).delete()
     if ds.type == 'c_ImageMosaic':
-        got_params = json.loads(ds.connection_params)
+        got_params = ds.get_connection_params_dict()
         mosaic_url = got_params["url"].replace("file://", "")
         split_mosaic_url = mosaic_url.split("/")
 

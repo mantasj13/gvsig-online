@@ -1302,7 +1302,7 @@ class LayerConnectionTrigger(models.Model):
         if self.layer.datastore.connection_params:
             try:
                 if isinstance(self.layer.datastore.connection_params, str):
-                    params = json.loads(self.layer.datastore.connection_params)
+                    params = self.layer.datastore.get_connection_params_dict()
                 else:
                     params = self.layer.datastore.connection_params
                 schema = params.get('schema', 'public')

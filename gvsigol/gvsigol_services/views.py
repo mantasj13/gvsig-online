@@ -725,12 +725,12 @@ def datastore_update(request, datastore_id):
                 
                 got_params = json.loads(connection_params)
                 if 'passwd' in got_params and got_params['passwd'] == '****':
-                    params = json.loads(datastore.connection_params)
+                    params = datastore.get_connection_params_dict()
                     got_params['passwd'] = params['passwd']
                     connection_params = json.dumps(got_params)
 
                 if 'password' in got_params and got_params['password'] == '****':
-                    params = json.loads(datastore.connection_params)
+                    params = datastore.get_connection_params_dict()
                     got_params['password'] = params['password']
                     connection_params = json.dumps(got_params)
 
@@ -753,7 +753,7 @@ def datastore_update(request, datastore_id):
                     form.add_error(None, _("Error updating datastore"))
     else:
         if datastore.connection_params:
-            params = json.loads(datastore.connection_params)
+            params = datastore.get_connection_params_dict()
             if 'passwd' in params:
                 params['passwd'] = '****'
             if 'password' in params:
@@ -1000,7 +1000,7 @@ def layer_delete_operation(request, layer_id):
         signals.layer_deleted.send(sender=None, layer=layer)
 
         if layer.datastore.type == 'c_ImageMosaic':
-            got_params = json.loads(layer.datastore.connection_params)
+            got_params = layer.datastore.get_connection_params_dict()
             mosaic_url = got_params["url"].replace("file://", "")
             split_mosaic_url = mosaic_url.split("/")
             mosaic_name = split_mosaic_url[split_mosaic_url.__len__()-1]
@@ -1182,7 +1182,7 @@ def backend_fields_list(request):
         if not utils.can_manage_datastore(request.user, ds):
             return HttpResponseForbidden("[]")
         layer = Layer.objects.filter(external=False).filter(datastore=ds, name=name).first()
-        params = json.loads(ds.connection_params)
+        params = ds.get_connection_params_dict()
         host = params['host']
         port = params['port']
         dbname = params['database']
@@ -1412,7 +1412,7 @@ def layer_add_with_group(request, layergroup_id):
                 if datastore.type == 'v_PostGIS':
                     extraParams['maxFeatures'] = maxFeatures
                     dts = datastore
-                    params = json.loads(dts.connection_params)
+                    params = dts.get_connection_params_dict()
                     host = params['host']
                     port = params['port']
                     dbname = params['database']
@@ -1895,7 +1895,7 @@ def get_date_fields_from_resource(request):
                 'error_message': 'not allowed'
             }
         if ds.type == 'v_PostGIS':
-            params = json.loads(ds.connection_params)
+            params = ds.get_connection_params_dict()
             host = params['host']
             port = params['port']
             dbname = params['database']
@@ -3045,7 +3045,7 @@ def _save_layer_topology_rules(request, layer):
                 logger.info(f"DEBUG convert_layer_format: Found datastore = {target_datastore}")
                 
                 if target_datastore:
-                    params = json.loads(target_datastore.connection_params)
+                    params = target_datastore.get_connection_params_dict()
                     schema = params.get('schema', 'public')
                     result = f"{schema}.{table_name}"
                     logger.info(f"DEBUG convert_layer_format: Schema='{schema}', Final result = '{result}'")
@@ -3381,7 +3381,7 @@ def convert_to_enumerate(request):
         return utils.get_exception(405, 'The field is already enumerated')
 
     if autogen:
-        params = json.loads(layer.datastore.connection_params)
+        params = layer.datastore.get_connection_params_dict()
         con = Introspect(database=params['database'], host=params['host'], port=params['port'], user=params['user'], password=params['passwd'])
         schema = params.get('schema', 'public')
         query = sql.SQL("SELECT {field} FROM {schema}.{table} GROUP BY {field}").format(
@@ -3451,7 +3451,7 @@ def layers_get_temporal_properties(request):
         mosaic_values = {}
         for layer_id in layers:
             layer = Layer.objects.get(id=layer_id)
-            params = json.loads(layer.datastore.connection_params)
+            params = layer.datastore.get_connection_params_dict()
             if layer.datastore.type == 'c_ImageMosaic':
                 host = MOSAIC_DB['host']
                 port = MOSAIC_DB['port']
@@ -4917,7 +4917,7 @@ def get_feature_info(request):
 def get_clustered_values(geojson, ds_name):
 
     datastore = Datastore.objects.get(name__exact=ds_name)
-    params = json.loads(datastore.connection_params)
+    params = datastore.get_connection_params_dict()
     host = params['host']
     port = params['port']
     dbname = params['database']
@@ -5052,7 +5052,7 @@ def get_datatable_data(request):
             idx = idx + 1
         property_name = aux_property_name.strip().replace(' ',',')
 
-        params = json.loads(layer.datastore.connection_params)
+        params = layer.datastore.get_connection_params_dict()
         if not sortby_field:
             sortby_field = property_name.split(',')[0]
 
@@ -5528,7 +5528,7 @@ def describeFeatureType(request):
 
 def _describeFeatureType(layer, skip_pks):
     try:
-        params = json.loads(layer.datastore.connection_params)
+        params = layer.datastore.get_connection_params_dict()
         host = params['host']
         port = params['port']
         dbname = params['database']
@@ -5575,7 +5575,7 @@ def _describeFeatureType(layer, skip_pks):
 def describe_feature_type(lyr, workspace):
     try:
         layer = Layer.objects.get(name=lyr, datastore__workspace__name=workspace)
-        params = json.loads(layer.datastore.connection_params)
+        params = layer.datastore.get_connection_params_dict()
         schema = params.get('schema', 'public')
 
         i = Introspect(database=params['database'], host=params['host'], port=params['port'], user=params['user'], password=params['passwd'])
@@ -5617,7 +5617,7 @@ def describeFeatureTypeWithPk(request):
                 response = {'fields': [], 'error': 'Not authorized'}
                 return HttpResponseForbidden(response, content_type='application/json')
 
-            params = json.loads(layer.datastore.connection_params)
+            params = layer.datastore.get_connection_params_dict()
             host = params['host']
             port = params['port']
             dbname = params['database']
@@ -8421,7 +8421,7 @@ def db_field_delete(request):
             for ctrl_field in settings.CONTROL_FIELDS:
                 if field == ctrl_field.get('name'):
                     return utils.get_exception(400, _('Control field "{0}" cannot be deleted').format(field))
-            params = json.loads(layer.datastore.connection_params)
+            params = layer.datastore.get_connection_params_dict()
             con = Introspect(database=params['database'], host=params['host'], port=params['port'], user=params['user'], password=params['passwd'])
             schema = params.get('schema', 'public')
             con.delete_column(schema, layer.source_name, field)
@@ -8479,7 +8479,7 @@ def db_field_rename(request):
                     return utils.get_exception(400, _('Control field "{0}" cannot be renamed').format(field))
                 elif new_field_name == ctrl_field.get('name'):
                     return utils.get_exception(400, _('The field name "{0}" is a reserved name').format(field))
-            params = json.loads(layer.datastore.connection_params)
+            params = layer.datastore.get_connection_params_dict()
             con = Introspect(database=params['database'], host=params['host'], port=params['port'], user=params['user'], password=params['passwd'])
             schema = params.get('schema', 'public')
             con.rename_column(schema, layer.source_name, field, new_field_name)
@@ -8772,7 +8772,7 @@ def db_add_field(request):
                 return HttpResponseForbidden('{"response": "Not authorized"}', content_type='application/json')
             if not (layer.datastore.type == 'v_PostGIS'):
                 return utils.get_exception(400, 'Error in the input params')
-            params = json.loads(layer.datastore.connection_params)
+            params = layer.datastore.get_connection_params_dict()
             schema = params.get('schema', 'public')
             gs = geographic_servers.get_instance().get_server_by_id(layer.datastore.workspace.server.id)
             iconn = Introspect(database=params['database'], host=params['host'], port=params['port'], user=params['user'], password=params['passwd'])
@@ -9015,7 +9015,7 @@ def _sqlview_update(request, is_update, sql_view=None):
             try:
                 sql_view.name = form.cleaned_data.get('name')
                 sql_view.datastore = form.cleaned_data.get('datastore')
-                target_datastore_params = json.loads(sql_view.datastore.connection_params)
+                target_datastore_params = sql_view.datastore.get_connection_params_dict()
                 target_schema = target_datastore_params.get('schema', 'public')
                 from_objs = []
                 table_fields = {}
@@ -9226,7 +9226,7 @@ def list_datastores_in_db(request):
         ds = Datastore.objects.get(id=id_ds)
         if not utils.can_manage_datastore(request.user, ds):
             return HttpResponseForbidden(json.dumps([]))
-        params = json.loads(ds.connection_params)
+        params = ds.get_connection_params_dict()
         host = params.get('host')
         port = params.get('port')
         database = params.get('database')
@@ -9237,7 +9237,7 @@ def list_datastores_in_db(request):
                   Datastore.objects.filter(defaultuserdatastore__username=request.user.username, type__startswith='v_')).order_by('name').distinct()
         filtered_datastores = []
         for datastore in datastore_list:
-            params = json.loads(datastore.connection_params)
+            params = datastore.get_connection_params_dict()
             if params.get('host') == host and \
                params.get('port') == port and \
                 params.get('database') == database:
@@ -9327,7 +9327,7 @@ def get_topology_available_layers(request, layer_id):
             current_datastore = current_layer.datastore
             
             # Obtener parámetros de conexión de la capa actual
-            current_params = json.loads(current_datastore.connection_params)
+            current_params = current_datastore.get_connection_params_dict()
             current_host = current_params.get('host')
             current_port = current_params.get('port')
             current_database = current_params.get('database')
@@ -9337,7 +9337,7 @@ def get_topology_available_layers(request, layer_id):
             
             for datastore in Datastore.objects.all():
                 try:
-                    ds_params = json.loads(datastore.connection_params)
+                    ds_params = datastore.get_connection_params_dict()
                     # Comparar host, port y database (excluyendo schema)
                     if (ds_params.get('host') == current_host and 
                         ds_params.get('port') == current_port and 
@@ -9466,7 +9466,7 @@ def get_topology_rules(request, layer_id):
                         # Buscar un datastore que use este schema
                         for datastore in Datastore.objects.all():
                             try:
-                                params = json.loads(datastore.connection_params)
+                                params = datastore.get_connection_params_dict()
                                 if params.get('schema', 'public') == schema:
                                     return f"{datastore.name}:{table_name}"
                             except:
@@ -9675,7 +9675,7 @@ def db_fill_link_field(request):
             if not (layer.datastore.type == 'v_PostGIS'):
                 return utils.get_exception(400, 'Only PostGIS layers are supported')
             
-            params = json.loads(layer.datastore.connection_params)
+            params = layer.datastore.get_connection_params_dict()
             schema = params.get('schema', 'public')
             
             iconn = Introspect(database=params['database'], host=params['host'], port=params['port'], user=params['user'], password=params['passwd'])
