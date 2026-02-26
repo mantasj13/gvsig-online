@@ -79,6 +79,16 @@ def login_user(request):
             if user is not None:
                 if user.is_active:
                     login(request, user)
+                    # Sync user to GeoServer on login
+                    try:
+                        from gvsigol_services.geoserver_usersync import sync_user, assign_user_roles
+                        from gvsigol_auth.auth_backend import get_roles as _get_roles
+                        sync_user(username, password=password)
+                        _roles = _get_roles(user)
+                        if _roles:
+                            assign_user_roles(username, _roles)
+                    except Exception as _e:
+                        import logging; logging.getLogger("gvsigol").warning(f"GeoServer login sync failed: {_e}")
                     action.send(user, verb="gvsigol_auth/login")
                     next = request.POST.get('next')
                     if next:

@@ -279,7 +279,8 @@ def add_user(username,
     params = {
         "sender": user,
         "username": username,
-        "user_obj": user
+        "user_obj": user,
+        "password": password
     }
     if roles is not None:
         if superuser:
@@ -356,7 +357,8 @@ def update_user(
     params = {
         "sender": user,
         "username": username,
-        "user_obj": user
+        "user_obj": user,
+        "password": password
     }
     if roles is not None:
         set_roles(username, roles)
