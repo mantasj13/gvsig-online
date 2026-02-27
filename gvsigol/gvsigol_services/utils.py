@@ -1576,7 +1576,7 @@ def wmts_options_for_openlayers(wmts_options, format=None, style=None, layer_sty
                                 matched = True
                                 break
                         if not matched:
-                            wmts_options['style'] = ''  # use WMTS default
+                            wmts_options['style'] = style_name  # use requested style name instead of WMTS default
                     break
         if not wmts_options.get('style'):
             for name, style in wmts_options['styles'].items():
