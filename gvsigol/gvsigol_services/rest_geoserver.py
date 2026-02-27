@@ -891,11 +891,16 @@ class Geoserver():
         r = self.session.get(url, json={}, auth=auth)
         if r.status_code==200:
             return r.content
+        if r.status_code==404:
+            return None
         raise FailedRequestError(r.status_code, r.content)
     
     
     def update_layer_styles_configuration(self, layer, style_name, default_style, styles_list, user=None, password=None):
         xml = self.get_layer_styles_configuration(layer, user, password)
+        if xml is None:
+            logger.warning(f"Could not update GWC layer styles configuration for {layer.datastore.workspace.name}:{layer.name}. Layer not found in GWC.")
+            return True
         tree = ET.fromstring(xml)
         
         url = self.gwc_url + '/layers/'+layer.datastore.workspace.name +':'+layer.name+'.xml'

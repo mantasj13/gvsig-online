@@ -87,7 +87,7 @@ class Geoserver():
         self.rest_url = master_node + "/rest"
         self.gwc_url = master_node + "/gwc/rest"
         self.slave_nodes = slave_nodes
-        self.rest_catalog = rest_geoserver.Geoserver(self.rest_url, self.gwc_url)
+        self.rest_catalog = rest_geoserver.Geoserver(self.rest_url, self.gwc_url, user=user, password=password)
         self.user = user
         self.password = password
         self.authz_srv_conf = authz_srv_conf
@@ -621,9 +621,12 @@ class Geoserver():
         except Exception as e:
             logger.exception('Sobrescribiendo estilo: ' + name)
             error_message = str(e)
-            if (error_message.startswith("There is already a style named")):
-                msg_name= name.split('_')[2]
-                error = str(_("There is already a style named")) + " " + msg_name
+            if error_message.startswith("There is already a style named"):
+                try:
+                    msg_name = name.split('_')[2]
+                except (IndexError, AttributeError):
+                    msg_name = name
+                error = f"{_('There is already a style named')} {msg_name}"
                 raise Exception(error)
             return False
     
@@ -634,18 +637,26 @@ class Geoserver():
         """
         Add new style to layer
         """
-        self.rest_catalog.add_style(layer_name, name, user=self.user, password=self.password)
-        if layer is not None:
-            style_list = []
-            default_style = ''
-            style_layers = StyleLayer.objects.filter(layer=layer)
-            for style_layer in style_layers:
-                if not style_layer.style.name.endswith('_tmp'):
-                    style_list.append(style_layer.style.name)
-                if style_layer.style.is_default:
-                    default_style = style_layer.style.name
-                            
-            self.rest_catalog.update_layer_styles_configuration(layer, name, default_style, style_list, user=self.user, password=self.password)
+        try:
+            self.rest_catalog.add_style(layer_name, name, user=self.user, password=self.password)
+            if layer is not None:
+                style_list = []
+                default_style = ''
+                style_layers = StyleLayer.objects.filter(layer=layer)
+                for style_layer in style_layers:
+                    if not style_layer.style.name.endswith('_tmp'):
+                        style_list.append(style_layer.style.name)
+                    if style_layer.style.is_default:
+                        default_style = style_layer.style.name
+                                
+                self.rest_catalog.update_layer_styles_configuration(layer, name, default_style, style_list, user=self.user, password=self.password)
+            return True
+        except RequestError as e:
+            logger.exception('Adding style: ' + name)
+            logger.error(e.get_detailed_message())
+        except Exception as e:
+            logger.exception('Adding style: ' + name)
+        return False
         
     def updateStyle(self, layer, style_name, sld_body):
         """
