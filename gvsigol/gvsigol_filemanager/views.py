@@ -338,7 +338,7 @@ class DeleteFileView(LoginRequiredMixin, UserPassesTestMixin, FilemanagerMixin, 
         path = FILEMANAGER_DIRECTORY +'/'+ request.POST.get('path')
         geotiffs = Datastore.objects.filter(type__in=['c_GeoTIFF','c_ImageMosaic'])
         for geotiff in geotiffs:
-            params = json.loads(geotiff.connection_params)
+            params = geotiff.get_connection_params_dict()
             if 'url' in params and params['url'].startswith(path) or (geotiff.type == 'c_ImageMosaic' and path.startswith(params['url'])) :
                 return HttpResponse(json.dumps({
                     'success': False,

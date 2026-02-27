@@ -403,7 +403,7 @@ def filter_to_json(filter):
     
 def get_geometry_field(layer):
     if layer.type == 'v_PostGIS':
-        params = json.loads(layer.datastore.connection_params)
+        params = layer.datastore.get_connection_params_dict()
         host = params['host']
         port = params['port']
         dbname = params['database']

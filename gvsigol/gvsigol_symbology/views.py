@@ -50,7 +50,7 @@ logger = logging.getLogger("gvsigol")
 def get_raster_statistics(request, layer_id):
     layer = Layer.objects.get(id=int(layer_id))
     datastore = Datastore.objects.get(id=layer.datastore_id)
-    params = json.loads(datastore.connection_params)
+    params = datastore.get_connection_params_dict()
     result = None
     if 'url' in params:
         result = utils.get_raster_stats(params['url'])
@@ -199,7 +199,7 @@ def select_legend_type(request, layer_id):
     if layer.type == 'v_PostGIS':
         is_vectorial = True
         try:
-            params = json.loads(layer.datastore.connection_params)
+            params = layer.datastore.get_connection_params_dict()
             host = params['host']
             port = params['port']
             dbname = params['database']
@@ -786,7 +786,7 @@ def get_minmax_values(request):
     field = request.POST.get('field')
     
     lyr = Layer.objects.get(id=layer_id)
-    connection = ast.literal_eval(lyr.datastore.connection_params)
+    connection = lyr.datastore.get_connection_params_dict()
     
     host = connection.get('host')
     port = connection.get('port')
