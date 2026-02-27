@@ -1389,8 +1389,9 @@ def get_wmts_options(
             if method.get("type") == "Get":
                 kvp_url = method.get("url")
                 if kvp_url:
-                    if kvp_url.startswith("http://"):
-                        kvp_url = "https://" + kvp_url[7:] # avoid mixed origin errors
+                    # Use relative URL to avoid mixed content / HTTPS issues
+                    import re
+                    kvp_url = re.sub(r'https?://[^/]+', '', kvp_url)
                     urls = [kvp_url if kvp_url.endswith("?") else (kvp_url + ("&" if "?" in kvp_url else "?"))]
                     
 
@@ -1562,7 +1563,20 @@ def wmts_options_for_openlayers(wmts_options, format=None, style=None, layer_sty
         elif layer_styles:
             for style in layer_styles:
                 if style.get('is_default', False):
-                    wmts_options['style'] = style.get('name')
+                    style_name = style.get('name')
+                    # Validate the style exists in WMTS capabilities
+                    if style_name in wmts_options['styles']:
+                        wmts_options['style'] = style_name
+                    else:
+                        # Try matching without/with workspace prefix
+                        matched = False
+                        for wmts_style_name in wmts_options['styles']:
+                            if wmts_style_name.endswith(':' + style_name) or wmts_style_name == style_name:
+                                wmts_options['style'] = wmts_style_name
+                                matched = True
+                                break
+                        if not matched:
+                            wmts_options['style'] = ''  # use WMTS default
                     break
         if not wmts_options.get('style'):
             for name, style in wmts_options['styles'].items():

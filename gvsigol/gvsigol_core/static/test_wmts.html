@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>WMTS Test - patricova02</title>
+<link rel="stylesheet" href="js/vendors/ol-4.0.1/ol.css" type="text/css">
+<style>
+  #map { width: 100%; height: 500px; }
+  #log { background: #222; color: #0f0; padding: 10px; font-family: monospace; height: 200px; overflow-y: auto; }
+</style>
+</head>
+<body>
+<h3>WMTS Direct Test</h3>
+<div id="map"></div>
+<div id="log"></div>
+<script src="js/vendors/ol-4.0.1/ol.js"></script>
+<script>
+function log(msg) {
+  document.getElementById('log').innerHTML += msg + '<br>';
+  console.log(msg);
+}
+
+log('Creating map...');
+
+// OSM base
+var osmSource = new ol.source.OSM();
+var osmLayer = new ol.layer.Tile({ source: osmSource });
+
+// WMTS layer - same params as project_get_conf returns
+var wmtsOptions = {"urls": ["/geoserver/gwc/service/wmts?"], "layer": "ws_enric21:patricova02", "requestEncoding": "KVP", "styles": {"ws_enric21:ws_enric21_patricova02_1": {"isDefault": true, "legend": "http://72.62.31.223/geoserver/ows?service=WMS&request=GetLegendGraphic&format=image%2Fpng&width=20&height=20&layer=ws_enric21%3Apatricova02", "width": "20", "height": "20", "format": "image/png"}}, "dimensions": {}, "style": "ws_enric21:ws_enric21_patricova02_1", "format": "image/png", "matrixSet": "EPSG:900913", "tileGrid": {"origin": null, "origins": [[-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0]], "minZoom": 0, "maxZoom": 30, "resolutions": [156543.03390625, 78271.516953125, 39135.7584765625, 19567.87923828125, 9783.939619140625, 4891.9698095703125, 2445.9849047851562, 1222.9924523925781, 611.4962261962891, 305.74811309814453, 152.87405654907226, 76.43702827453613, 38.218514137268066, 19.109257068634033, 9.554628534317017, 4.777314267158508, 2.388657133579254, 1.194328566789627, 0.5971642833948135, 0.29858214169740677, 0.14929107084870338, 0.07464553542435169, 0.037322767712175846, 0.018661383856087923, 0.009330691928043961, 0.004665345964021981, 0.0023326729820109904, 0.0011663364910054952, 0.0005831682455027476, 0.0002915841227513738, 0.0001457920613756869], "tileSize": null, "tileSizes": [256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256], "matrixIds": ["EPSG:900913:0", "EPSG:900913:1", "EPSG:900913:2", "EPSG:900913:3", "EPSG:900913:4", "EPSG:900913:5", "EPSG:900913:6", "EPSG:900913:7", "EPSG:900913:8", "EPSG:900913:9", "EPSG:900913:10", "EPSG:900913:11", "EPSG:900913:12", "EPSG:900913:13", "EPSG:900913:14", "EPSG:900913:15", "EPSG:900913:16", "EPSG:900913:17", "EPSG:900913:18", "EPSG:900913:19", "EPSG:900913:20", "EPSG:900913:21", "EPSG:900913:22", "EPSG:900913:23", "EPSG:900913:24", "EPSG:900913:25", "EPSG:900913:26", "EPSG:900913:27", "EPSG:900913:28", "EPSG:900913:29", "EPSG:900913:30"], "fullTileRanges": [{"minX": 0, "maxX": 0, "minY": 0, "maxY": 0}, {"minX": 0, "maxX": 0, "minY": 0, "maxY": 0}, {"minX": 1, "maxX": 1, "minY": 1, "maxY": 1}, {"minX": 3, "maxX": 3, "minY": 3, "maxY": 3}, {"minX": 7, "maxX": 7, "minY": 6, "maxY": 6}, {"minX": 15, "maxX": 15, "minY": 12, "maxY": 12}, {"minX": 31, "maxX": 31, "minY": 24, "maxY": 24}, {"minX": 63, "maxX": 63, "minY": 48, "maxY": 48}, {"minX": 127, "maxX": 127, "minY": 97, "maxY": 97}, {"minX": 255, "maxX": 255, "minY": 195, "maxY": 195}, {"minX": 510, "maxX": 511, "minY": 390, "maxY": 391}, {"minX": 1021, "maxX": 1022, "minY": 780, "maxY": 782}, {"minX": 2043, "maxX": 2045, "minY": 1561, "maxY": 1564}, {"minX": 4086, "maxX": 4091, "minY": 3122, "maxY": 3129}, {"minX": 8172, "maxX": 8183, "minY": 6245, "maxY": 6258}, {"minX": 16345, "maxX": 16366, "minY": 12490, "maxY": 12516}, {"minX": 32691, "maxX": 32733, "minY": 24980, "maxY": 25032}, {"minX": 65382, "maxX": 65466, "minY": 49960, "maxY": 50065}, {"minX": 130764, "maxX": 130932, "minY": 99921, "maxY": 100131}, {"minX": 261528, "maxX": 261865, "minY": 199842, "maxY": 200263}, {"minX": 523057, "maxX": 523730, "minY": 399684, "maxY": 400527}, {"minX": 1046114, "maxX": 1047460, "minY": 799368, "maxY": 801054}, {"minX": 2092229, "maxX": 2094921, "minY": 1598736, "maxY": 1602108}, {"minX": 4184459, "maxX": 4189842, "minY": 3197473, "maxY": 3204217}, {"minX": 8368919, "maxX": 8379685, "minY": 6394946, "maxY": 6408435}, {"minX": 16737838, "maxX": 16759370, "minY": 12789893, "maxY": 12816871}, {"minX": 33475676, "maxX": 33518740, "minY": 25579787, "maxY": 25633743}, {"minX": 66951352, "maxX": 67037481, "minY": 51159575, "maxY": 51267487}, {"minX": 133902704, "maxX": 134074962, "minY": 102319150, "maxY": 102534974}, {"minX": 267805408, "maxX": 268149925, "minY": 204638300, "maxY": 205069949}, {"minX": 535610817, "maxX": 536299850, "minY": 409276601, "maxY": 410139898}], "fullTileRanges_ol4": [{"minX": 0, "maxX": 0, "minY": -1, "maxY": -1}, {"minX": 0, "maxX": 0, "minY": -1, "maxY": -1}, {"minX": 1, "maxX": 1, "minY": -2, "maxY": -2}, {"minX": 3, "maxX": 3, "minY": -4, "maxY": -4}, {"minX": 7, "maxX": 7, "minY": -7, "maxY": -7}, {"minX": 15, "maxX": 15, "minY": -13, "maxY": -13}, {"minX": 31, "maxX": 31, "minY": -25, "maxY": -25}, {"minX": 63, "maxX": 63, "minY": -49, "maxY": -49}, {"minX": 127, "maxX": 127, "minY": -98, "maxY": -98}, {"minX": 255, "maxX": 255, "minY": -196, "maxY": -196}, {"minX": 510, "maxX": 511, "minY": -391, "maxY": -392}, {"minX": 1021, "maxX": 1022, "minY": -781, "maxY": -783}, {"minX": 2043, "maxX": 2045, "minY": -1562, "maxY": -1565}, {"minX": 4086, "maxX": 4091, "minY": -3123, "maxY": -3130}, {"minX": 8172, "maxX": 8183, "minY": -6246, "maxY": -6259}, {"minX": 16345, "maxX": 16366, "minY": -12491, "maxY": -12517}, {"minX": 32691, "maxX": 32733, "minY": -24981, "maxY": -25033}, {"minX": 65382, "maxX": 65466, "minY": -49961, "maxY": -50066}, {"minX": 130764, "maxX": 130932, "minY": -99922, "maxY": -100132}, {"minX": 261528, "maxX": 261865, "minY": -199843, "maxY": -200264}, {"minX": 523057, "maxX": 523730, "minY": -399685, "maxY": -400528}, {"minX": 1046114, "maxX": 1047460, "minY": -799369, "maxY": -801055}, {"minX": 2092229, "maxX": 2094921, "minY": -1598737, "maxY": -1602109}, {"minX": 4184459, "maxX": 4189842, "minY": -3197474, "maxY": -3204218}, {"minX": 8368919, "maxX": 8379685, "minY": -6394947, "maxY": -6408436}, {"minX": 16737838, "maxX": 16759370, "minY": -12789894, "maxY": -12816872}, {"minX": 33475676, "maxX": 33518740, "minY": -25579788, "maxY": -25633744}, {"minX": 66951352, "maxX": 67037481, "minY": -51159576, "maxY": -51267488}, {"minX": 133902704, "maxX": 134074962, "minY": -102319151, "maxY": -102534975}, {"minX": 267805408, "maxX": 268149925, "minY": -204638301, "maxY": -205069950}, {"minX": 535610817, "maxX": 536299850, "minY": -409276602, "maxY": -410139899}], "extent": [-47030.232980273664, 4729951.820127737, -21313.577052481472, 4762172.490848124]}, "tileMatrixSet": {"origin": null, "origins": [[-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0], [-20037508.34, 20037508.0]], "minZoom": 0, "maxZoom": 30, "resolutions": [156543.03390625, 78271.516953125, 39135.7584765625, 19567.87923828125, 9783.939619140625, 4891.9698095703125, 2445.9849047851562, 1222.9924523925781, 611.4962261962891, 305.74811309814453, 152.87405654907226, 76.43702827453613, 38.218514137268066, 19.109257068634033, 9.554628534317017, 4.777314267158508, 2.388657133579254, 1.194328566789627, 0.5971642833948135, 0.29858214169740677, 0.14929107084870338, 0.07464553542435169, 0.037322767712175846, 0.018661383856087923, 0.009330691928043961, 0.004665345964021981, 0.0023326729820109904, 0.0011663364910054952, 0.0005831682455027476, 0.0002915841227513738, 0.0001457920613756869], "tileSize": null, "tileSizes": [256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256, 256], "matrixIds": ["EPSG:900913:0", "EPSG:900913:1", "EPSG:900913:2", "EPSG:900913:3", "EPSG:900913:4", "EPSG:900913:5", "EPSG:900913:6", "EPSG:900913:7", "EPSG:900913:8", "EPSG:900913:9", "EPSG:900913:10", "EPSG:900913:11", "EPSG:900913:12", "EPSG:900913:13", "EPSG:900913:14", "EPSG:900913:15", "EPSG:900913:16", "EPSG:900913:17", "EPSG:900913:18", "EPSG:900913:19", "EPSG:900913:20", "EPSG:900913:21", "EPSG:900913:22", "EPSG:900913:23", "EPSG:900913:24", "EPSG:900913:25", "EPSG:900913:26", "EPSG:900913:27", "EPSG:900913:28", "EPSG:900913:29", "EPSG:900913:30"], "fullTileRanges": [{"minX": 0, "maxX": 0, "minY": 0, "maxY": 0}, {"minX": 0, "maxX": 0, "minY": 0, "maxY": 0}, {"minX": 1, "maxX": 1, "minY": 1, "maxY": 1}, {"minX": 3, "maxX": 3, "minY": 3, "maxY": 3}, {"minX": 7, "maxX": 7, "minY": 6, "maxY": 6}, {"minX": 15, "maxX": 15, "minY": 12, "maxY": 12}, {"minX": 31, "maxX": 31, "minY": 24, "maxY": 24}, {"minX": 63, "maxX": 63, "minY": 48, "maxY": 48}, {"minX": 127, "maxX": 127, "minY": 97, "maxY": 97}, {"minX": 255, "maxX": 255, "minY": 195, "maxY": 195}, {"minX": 510, "maxX": 511, "minY": 390, "maxY": 391}, {"minX": 1021, "maxX": 1022, "minY": 780, "maxY": 782}, {"minX": 2043, "maxX": 2045, "minY": 1561, "maxY": 1564}, {"minX": 4086, "maxX": 4091, "minY": 3122, "maxY": 3129}, {"minX": 8172, "maxX": 8183, "minY": 6245, "maxY": 6258}, {"minX": 16345, "maxX": 16366, "minY": 12490, "maxY": 12516}, {"minX": 32691, "maxX": 32733, "minY": 24980, "maxY": 25032}, {"minX": 65382, "maxX": 65466, "minY": 49960, "maxY": 50065}, {"minX": 130764, "maxX": 130932, "minY": 99921, "maxY": 100131}, {"minX": 261528, "maxX": 261865, "minY": 199842, "maxY": 200263}, {"minX": 523057, "maxX": 523730, "minY": 399684, "maxY": 400527}, {"minX": 1046114, "maxX": 1047460, "minY": 799368, "maxY": 801054}, {"minX": 2092229, "maxX": 2094921, "minY": 1598736, "maxY": 1602108}, {"minX": 4184459, "maxX": 4189842, "minY": 3197473, "maxY": 3204217}, {"minX": 8368919, "maxX": 8379685, "minY": 6394946, "maxY": 6408435}, {"minX": 16737838, "maxX": 16759370, "minY": 12789893, "maxY": 12816871}, {"minX": 33475676, "maxX": 33518740, "minY": 25579787, "maxY": 25633743}, {"minX": 66951352, "maxX": 67037481, "minY": 51159575, "maxY": 51267487}, {"minX": 133902704, "maxX": 134074962, "minY": 102319150, "maxY": 102534974}, {"minX": 267805408, "maxX": 268149925, "minY": 204638300, "maxY": 205069949}, {"minX": 535610817, "maxX": 536299850, "minY": 409276601, "maxY": 410139898}], "fullTileRanges_ol4": [{"minX": 0, "maxX": 0, "minY": -1, "maxY": -1}, {"minX": 0, "maxX": 0, "minY": -1, "maxY": -1}, {"minX": 1, "maxX": 1, "minY": -2, "maxY": -2}, {"minX": 3, "maxX": 3, "minY": -4, "maxY": -4}, {"minX": 7, "maxX": 7, "minY": -7, "maxY": -7}, {"minX": 15, "maxX": 15, "minY": -13, "maxY": -13}, {"minX": 31, "maxX": 31, "minY": -25, "maxY": -25}, {"minX": 63, "maxX": 63, "minY": -49, "maxY": -49}, {"minX": 127, "maxX": 127, "minY": -98, "maxY": -98}, {"minX": 255, "maxX": 255, "minY": -196, "maxY": -196}, {"minX": 510, "maxX": 511, "minY": -391, "maxY": -392}, {"minX": 1021, "maxX": 1022, "minY": -781, "maxY": -783}, {"minX": 2043, "maxX": 2045, "minY": -1562, "maxY": -1565}, {"minX": 4086, "maxX": 4091, "minY": -3123, "maxY": -3130}, {"minX": 8172, "maxX": 8183, "minY": -6246, "maxY": -6259}, {"minX": 16345, "maxX": 16366, "minY": -12491, "maxY": -12517}, {"minX": 32691, "maxX": 32733, "minY": -24981, "maxY": -25033}, {"minX": 65382, "maxX": 65466, "minY": -49961, "maxY": -50066}, {"minX": 130764, "maxX": 130932, "minY": -99922, "maxY": -100132}, {"minX": 261528, "maxX": 261865, "minY": -199843, "maxY": -200264}, {"minX": 523057, "maxX": 523730, "minY": -399685, "maxY": -400528}, {"minX": 1046114, "maxX": 1047460, "minY": -799369, "maxY": -801055}, {"minX": 2092229, "maxX": 2094921, "minY": -1598737, "maxY": -1602109}, {"minX": 4184459, "maxX": 4189842, "minY": -3197474, "maxY": -3204218}, {"minX": 8368919, "maxX": 8379685, "minY": -6394947, "maxY": -6408436}, {"minX": 16737838, "maxX": 16759370, "minY": -12789894, "maxY": -12816872}, {"minX": 33475676, "maxX": 33518740, "minY": -25579788, "maxY": -25633744}, {"minX": 66951352, "maxX": 67037481, "minY": -51159576, "maxY": -51267488}, {"minX": 133902704, "maxX": 134074962, "minY": -102319151, "maxY": -102534975}, {"minX": 267805408, "maxX": 268149925, "minY": -204638301, "maxY": -205069950}, {"minX": 535610817, "maxX": 536299850, "minY": -409276602, "maxY": -410139899}], "extent": [-47030.232980273664, 4729951.820127737, -21313.577052481472, 4762172.490848124]}, "projection": "EPSG:900913"};
+
+log('WMTS URLs: ' + JSON.stringify(wmtsOptions.urls));
+log('Style: ' + wmtsOptions.style);
+log('MatrixSet: ' + wmtsOptions.matrixSet);
+log('Extent: ' + JSON.stringify(wmtsOptions.tileGrid.extent));
+
+try {
+  var tileGrid = new ol.tilegrid.WMTS({
+    extent: wmtsOptions.tileGrid.extent,
+    origins: wmtsOptions.tileGrid.origins,
+    resolutions: wmtsOptions.tileGrid.resolutions,
+    matrixIds: wmtsOptions.tileGrid.matrixIds,
+    tileSizes: wmtsOptions.tileGrid.tileSizes
+  });
+  log('TileGrid created OK. fullTileRanges_: ' + (tileGrid.a ? tileGrid.a.length : 'null'));
+
+  var source = new ol.source.WMTS({
+    urls: wmtsOptions.urls,
+    layer: wmtsOptions.layer,
+    matrixSet: wmtsOptions.matrixSet,
+    format: wmtsOptions.format,
+    projection: ol.proj.get(wmtsOptions.projection),
+    requestEncoding: wmtsOptions.requestEncoding,
+    tileGrid: tileGrid,
+    style: wmtsOptions.style,
+    wrapX: true
+  });
+
+  source.on('tileloadstart', function() { log('Tile load START'); });
+  source.on('tileloadend', function() { log('Tile load END (success)'); });
+  source.on('tileloaderror', function(e) { log('Tile load ERROR: ' + JSON.stringify(e)); });
+
+  var wmtsLayer = new ol.layer.Tile({ source: source, visible: true });
+  log('WMTS layer created OK');
+
+  var map = new ol.Map({
+    target: 'map',
+    layers: [osmLayer, wmtsLayer],
+    view: new ol.View({
+      center: ol.proj.fromLonLat([-0.307, 39.17]),
+      zoom: 12,
+      projection: 'EPSG:3857'
+    })
+  });
+  log('Map created OK');
+} catch(e) {
+  log('ERROR: ' + e.message);
+  log('Stack: ' + e.stack);
+}
+</script>
+</body>
+</html>
