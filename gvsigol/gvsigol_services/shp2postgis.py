@@ -257,7 +257,7 @@ def shp2postgis(shp_path, table_name, srs, host, port, dbname, schema, user, pas
         ogr.set_encoding(encoding)
     ogr.set_input(shp_path, srs=srs)
     conn = gdaltools.PgConnectionString(host=host, port=port, dbname=dbname, schema=schema, user=user, password=password)
-    ogr.set_output(conn, table_name=table_name)
+    ogr.set_output(conn, table_name=table_name, srs='EPSG:3857')
     if preserve_fid:
         ogr.preserve_fid = preserve_fid
     config_options = {
