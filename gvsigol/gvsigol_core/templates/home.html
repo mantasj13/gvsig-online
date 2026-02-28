@@ -82,7 +82,7 @@
 					{% for project in projects %}
 					<li class="item">
 						<div class="product-img">
-							<img src={{project.image}} alt="Project Image">
+							<img src="{{project.image}}" alt="Project Image">
 						</div>
 						<div class="product-info">
 							<a href="{{project.url}}" class="product-title">{{project.title}} <span style="font-size: 100%; font-weight: 500; padding: .5em .5em .5em;" class="btn btn-default pull-right"><i class="fa fa-cube margin-r-5"></i> {% trans "Load project" %}</span></a>
@@ -107,7 +107,7 @@
 					{% for project in public_projects %}
 					<li class="item">
 						<div class="product-img">
-							<img src={{project.image}} alt="Project Image">
+							<img src="{{project.image}}" alt="Project Image">
 						</div>
 						<div class="product-info">
 							<a href="{{project.url}}" class="product-title">{{project.title}} <span style="font-size: 100%; font-weight: 500; padding: .5em .5em .5em;" class="btn btn-default pull-right"><i class="fa fa-cube margin-r-5"></i> {% trans "Load project" %}</span></a> 
