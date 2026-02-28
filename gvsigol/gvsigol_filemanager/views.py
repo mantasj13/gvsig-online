@@ -28,6 +28,27 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django_sendfile import sendfile
 from django.contrib.auth.decorators import login_required
 from gvsigol_auth.utils import staff_required
+
+def detect_shapefile_srs(shp_path):
+    """Detecta el SRS de un shapefile usando GDAL/OGR."""
+    try:
+        from osgeo import osr, ogr
+        ds = ogr.Open(shp_path)
+        if ds:
+            layer = ds.GetLayer()
+            if layer:
+                spatial_ref = layer.GetSpatialRef()
+                if spatial_ref:
+                    spatial_ref.AutoIdentifyEPSG()
+                    code = spatial_ref.GetAuthorityCode(None)
+                    ds = None
+                    if code:
+                        return code
+                ds = None
+    except Exception:
+        pass
+    return None
+
 from django.utils.decorators import method_decorator
 from django.shortcuts import render
 from .tasks import postBackground
@@ -152,7 +173,10 @@ class ExportToDatabaseView(LoginRequiredMixin, UserPassesTestMixin, FilemanagerM
         except UnicodeError:
             shp_columns = []
             column_name_error = _("The layer contains non-ASCII characters in field names and it is not suported. Rename the offending fields and try again. Allowed characters are a-z, A-Z, _ or numbers; the first character can't be a number.")
-        form = PostgisLayerUploadForm(user=self.request.user, source_columns=shp_columns)
+        # Auto-detectar SRS del shapefile
+        detected_srs = detect_shapefile_srs(file_details.get("fileurl"))
+        form = PostgisLayerUploadForm(user=self.request.user, source_columns=shp_columns, initial={"srs": detected_srs} if detected_srs else {})
+        context["detected_srs"] = detected_srs
         context['file'] = file_details
         context['form'] = form
         context["back_url"] = '%s?path=%s' % (reverse_lazy('filemanager:browser'), file_details.get('directory'))
