@@ -611,10 +611,14 @@ def project_update(request, pid):
         
 
         if has_image:
+            logger.debug("Project image received: %s" % request.FILES['project-image'].name)
             project.image = request.FILES['project-image']
+            project.save()
             
         if has_logo:
+            logger.debug("Project logo received: %s" % request.FILES['project-logo'].name)
             project.logo = request.FILES['project-logo']
+            project.save()
 
         project.save()
 
@@ -2048,7 +2052,9 @@ def application_update(request, appid):
         app.is_public = is_public
         
         if has_image:
+            logger.debug("Application image received: %s" % request.FILES['application-image'].name)
             app.image = request.FILES['application-image']
+            app.save()
 
         app.save()
 
