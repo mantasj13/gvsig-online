@@ -255,7 +255,27 @@ def shp2postgis(shp_path, table_name, srs, host, port, dbname, schema, user, pas
     ogr = gdaltools.ogr2ogr()
     if encoding != 'autodetect':
         ogr.set_encoding(encoding)
-    ogr.set_input(shp_path, srs=srs)
+    # Si el SRS seleccionado es EPSG:3857, intentar detectar el SRS real del shapefile
+    # ya que los shapefiles raramente están en Web Mercator
+    source_srs = srs
+    if srs == 'EPSG:3857':
+        try:
+            from osgeo import osr, ogr as ogr_lib
+            ds = ogr_lib.Open(shp_path)
+            if ds:
+                layer = ds.GetLayer()
+                if layer:
+                    spatial_ref = layer.GetSpatialRef()
+                    if spatial_ref:
+                        spatial_ref.AutoIdentifyEPSG()
+                        code = spatial_ref.GetAuthorityCode(None)
+                        if code and code != '3857':
+                            source_srs = f'EPSG:{code}'
+                            logger.info(f'Auto-detected SRS: {source_srs} for {shp_path}')
+                ds = None
+        except Exception as e:
+            logger.warning(f'Could not auto-detect SRS: {e}')
+    ogr.set_input(shp_path, srs=source_srs)
     conn = gdaltools.PgConnectionString(host=host, port=port, dbname=dbname, schema=schema, user=user, password=password)
     ogr.set_output(conn, table_name=table_name, srs='EPSG:3857')
     if preserve_fid:
