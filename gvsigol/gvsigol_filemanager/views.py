@@ -43,7 +43,7 @@ def detect_shapefile_srs(shp_path):
                     code = spatial_ref.GetAuthorityCode(None)
                     ds = None
                     if code:
-                        return code
+                        return f"EPSG:{code}"
                 ds = None
     except Exception:
         pass
