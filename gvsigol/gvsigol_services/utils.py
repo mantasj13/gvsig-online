@@ -1152,7 +1152,7 @@ def set_default_permissions(file_path):
     """
     umask = os.umask(0o666) # set a random mask to retrive the system mask
     os.umask(umask) # restore system mask
-    os.chmod(file_path, 0o640 & ~umask)
+    os.chmod(file_path, 0o644)
 
 def get_datastore_name(username):
     """

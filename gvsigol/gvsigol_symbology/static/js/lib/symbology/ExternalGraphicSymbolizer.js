@@ -52,11 +52,14 @@ ExternalGraphicSymbolizer.prototype.getTableUI = function() {
 
 ExternalGraphicSymbolizer.prototype.toXML = function(){
 	
+	var geoserverHref = this.online_resource;
+	var idx = geoserverHref.indexOf("symbol_libraries/");
+	if (idx !== -1) { geoserverHref = geoserverHref.substring(geoserverHref.lastIndexOf('/') + 1); }
 	var xml = '';
 	xml += '<PointSymbolizer>';
 	xml += 	'<Graphic>';
 	xml += 		'<ExternalGraphic>';
-	xml += 			'<OnlineResource xlink:type="simple" xlink:href="' + this.online_resource + '" />';
+	xml += 			'<OnlineResource xlink:type="simple" xlink:href="' + geoserverHref + '" />';
 	xml += 			'<Format>' + this.format + '</Format>';
 	xml += 		'</ExternalGraphic>';
 	xml += 		'<Size>' + this.size + '</Size>';

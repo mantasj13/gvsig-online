@@ -188,7 +188,7 @@ def check_library_path(library):
     library_path = os.path.join(settings.MEDIA_ROOT, "symbol_libraries", library.name) + "/"
     try:        
         os.mkdir(library_path)
-        os.chmod(library_path, 0o750)
+        os.chmod(library_path, 0o755)
         return library_path
      
     except OSError as e:
@@ -231,6 +231,14 @@ def save_external_graphic(library_path, file, file_name):
             for chunk in file.chunks():
                 destination.write(chunk)
         set_default_permissions(file_path)
+        # Also copy to GeoServer styles dir for SLD rendering
+        import shutil
+        gs_dst = os.path.join("/opt/geoserver/data_dir/styles", file_name)
+        try:
+            shutil.copy2(file_path, gs_dst)
+            os.chmod(gs_dst, 0o644)
+        except Exception:
+            pass
         return True
      
     except Exception:

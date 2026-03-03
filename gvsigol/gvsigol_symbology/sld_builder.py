@@ -303,7 +303,22 @@ def create_rule(r, symbolizers, feature_type_style, geom_field=None):
             gph.Opacity = str(s.externalgraphicsymbolizer.opacity)
             egph = ExternalGraphic(gph)
             egph.Format = s.externalgraphicsymbolizer.format
-            egph.create_onlineresource(s.externalgraphicsymbolizer.online_resource)
+            # Copy image to GeoServer styles dir and use filename only
+            import os, shutil
+            or_url = s.externalgraphicsymbolizer.online_resource
+            sl_idx = or_url.find("symbol_libraries/")
+            if sl_idx != -1:
+                rel_path = or_url[sl_idx:]
+                src = os.path.join("/opt/gvsigol_data", rel_path)
+                fname = os.path.basename(src)
+                dst = os.path.join("/opt/geoserver/data_dir/styles", fname)
+                try:
+                    shutil.copy2(src, dst)
+                    os.chmod(dst, 0o644)
+                except Exception:
+                    pass
+                or_url = fname
+            egph.create_onlineresource(or_url)
             
         elif hasattr(s, 'textsymbolizer'):
             symbolizer = TextSymbolizer(rule)
